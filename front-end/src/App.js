@@ -21,6 +21,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Alert from '@mui/material/Alert';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import ContentPasteSearchIcon from '@mui/icons-material/ContentPasteSearch';
+import SearchIcon from '@mui/icons-material/Search';
+import EmailIcon from '@mui/icons-material/Email';
 import _ from 'lodash';
 import './App.css';
 
@@ -139,10 +143,14 @@ function App() {
           backgroundSize: "cover",
         }}
       >
-        <h1>Secret Santa Generator</h1>
-        <h2>Enjoy ~</h2>
+        <h1 style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          top: "20px"
+        }}>Secret Santa Generator</h1>
 
-        <TableContainer component={Paper}>
+        <TableContainer component={Paper} style={{marginBottom: "50px", marginTop: "50px"}}>
           <Table sx={{ minWidth: 650 }} aria-label="a dense table">
             <TableHead>
               <TableRow>
@@ -164,27 +172,51 @@ function App() {
         <form style={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          marginBottom: "30px"
         }}> 
-          <label>
+          <label>            
+            Name
             <AccountCircle />
-            Name:
+            :
             <input 
             type="text" 
             id="name"
             value={name}
-            onChange={(e) => changeName(e.target.value)} required/>
+            required
+            onChange={(e) => changeName(e.target.value)} />
           </label>
           <label>
-            Email:
-            <input type="text" id="email" value={email} onChange={(e) => changeEmail(e.target.value)} required/>
+            Email
+            <EmailIcon/>
+            :
+            <input type="text" id="email" value={email} required onChange={(e) => changeEmail(e.target.value)} />
           </label>
-          <Fab color="primary" aria-label="add">
+          <Fab color="primary" aria-label="add" size="small" style={{marginRight: "10px", marginLeft: "10px"}}>
             <AddIcon onClick={submitFormHandler}/>
           </Fab>
-        </form>
-        <Button variant="contained" onClick={sendDataBE} style={{justifyContent: 'center'}}>Generate Now!
+          <Fab color="primary" aria-label="restart" size="small" style={{marginRight: "10px"}}>
+            <RestartAltIcon onClick={()=>{setData({});setResult(null)}}/>
+          </Fab>
+          <Button variant="contained" onClick={sendDataBE} style={{justifyContent: 'center'}}>Generate Now!
         </Button>
+        </form>
+        <form style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
+          <label>
+            
+            Unique ID<ContentPasteSearchIcon/>:
+            
+            <input height="100">
+            </input>
+          </label>
+          <Fab color="primary" aria-label="search" size="small" style={{marginLeft: "10px"}}>
+          <SearchIcon/>
+          </Fab>
+        </form>
         {error && <Alert severity="error">Generate failed. Please try it again.</Alert>}
         <br></br>
       </Container>

@@ -56,7 +56,10 @@ function App() {
   const [show, setShow] = useState({})
   const [data, setData] = useState({});
   const [result, setResult] = useState(null);
+  const [newuid, setNewuid] = useState('')
   const [error, setError] = useState(false);
+  const [uid, setUid] = useState('');
+  
 
   const changeName = (value) => {
     setName(value);
@@ -64,6 +67,10 @@ function App() {
   
   const changeEmail= (value) => {
     setEmail(value);
+  }
+
+  const changeUid= (value) => {
+    setUid(value);
   }
 
   const submitFormHandler= () => {
@@ -79,27 +86,56 @@ function App() {
   }
 
   const sendDataBE = () => {
-    const json_data = JSON.stringify(data)
+    // const json_data = JSON.stringify(data)
     axios.post('/generator', data)
         .then(response => {
               console.log(response);
+              console.log("response");
+              console.log(data);
+              console.log(result);
               console.log(_.isEmpty(response.data));
               if (!_.isEmpty(response.data)){
                 console.log(response.data);
                 console.log("no error");
-                setResult(response.data);
+                setResult(response.data["pairing"]);
+                setNewuid(response.data["uid"]);
                 const show_result = {};
                 for (const key in response.data) {
                   show_result[key] = false;
                 }
                 setShow(show_result);
+                console.log(newuid)
               }else{
                 console.log("error");
                 setError(true);
+              }                
+            })     
+  }
+  
+  const searchUid = () => {
+    console.log("search")
+    console.log(uid)
+    axios.post('/searchhistory', uid)
+        .then(response => {
+              console.log(response);
+              console.log(data);
+              console.log(result);
+              setData(response.data["data"]);
+              setResult(response.data["result"]);
+              console.log(data);
+              console.log(result);
+              const show_result = {};
+              for (const key in response.data) {
+                show_result[key] = false;
               }
-                
-            })
-        
+              setShow(show_result);
+          //   if (!_.isEmpty(response.data)){
+
+          //   }else{
+          //   console.log("No record found");
+          // }                
+          }
+        )
   }
 
   const switchHandler = (event) => {
@@ -169,6 +205,7 @@ function App() {
             </TableBody>
           </Table>
         </TableContainer>
+        {newuid && <Alert severity="info" style={{marginBottom: "10px"}}>Please keep a note of your Unique ID: {newuid}</Alert>}
         <form style={{
           display: "flex",
           justifyContent: "center",
@@ -206,15 +243,17 @@ function App() {
           justifyContent: "center",
           alignItems: "center"
         }}>
-          <label>
-            
-            Unique ID<ContentPasteSearchIcon/>:
-            
-            <input height="100">
+          <label>           
+            Unique ID<ContentPasteSearchIcon/>:           
+            <input type="text" 
+            id="uid"
+            value={uid}
+            required
+            onChange={(e) => changeUid(e.target.value)}>
             </input>
           </label>
           <Fab color="primary" aria-label="search" size="small" style={{marginLeft: "10px"}}>
-          <SearchIcon/>
+          <SearchIcon onClick={searchUid}/>
           </Fab>
         </form>
         {error && <Alert severity="error">Generate failed. Please try it again.</Alert>}
